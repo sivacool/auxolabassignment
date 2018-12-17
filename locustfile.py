@@ -1,10 +1,10 @@
 from locust import HttpLocust, TaskSet, task
+from json import loads,dumps
 class UserBehavior(TaskSet):
 	@task
-	def get_tests(self):
-		self.client.get("/tests")
-	@task
 	def put_tests(self):
-		self.client.post("/tests", dict(name= "load testing",description= "checking if a software can handle the expected load"))
+		payload = dict(name= "Siva Ravi")
+		headers = {'content-type':'application/json'}
+		self.client.post("/tests",data =dumps(payload),headers=headers,catch_response=True)
 class WebsiteUser(HttpLocust):
 	task_set = UserBehavior
