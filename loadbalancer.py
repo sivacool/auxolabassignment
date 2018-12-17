@@ -34,5 +34,5 @@ def mailTrigger(value):
 
 
 if __name__ == '__main__':
-	os.system("locust -c 1000 -r 500 -t 1m --no-web --host http://localhost:5000 --csv=log")
+	os.system("locust -c 10 -r 5 -t 30s --no-web --host http://localhost:5000 --csv=log")
 	app.run(port=5000)  
