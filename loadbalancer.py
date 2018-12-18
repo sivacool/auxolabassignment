@@ -11,8 +11,8 @@ app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 mail = Mail(app)
 
-@app.route('/tests', methods=['POST'])
-def tests():
+@app.route('/username', methods=['POST'])
+def username():
 	data = request.get_json()
 	with counter.get_lock():
 		counter.value += 1
@@ -23,10 +23,13 @@ def tests():
 	return Response(dumps({"status":"sucess"}),mimetype='application/json')
 
 def mailTrigger(value):
-	msg = Message("Auxo Labs Load testing mail of "+value+"requests",sender= 'sivasivacsc@gmail.com',recipients=['sivasivacsc@gmail.com'])
+	msg = Message("Auxo Labs Load testing mail of "+str(value)+" requests",sender= 'sivasivacsc@gmail.com',recipients=['sivasivacsc@gmail.com'])
 	msg.body = "HI Auxo Labs PFA"
-	msg.attach("log_distribution.csv","text/csv",log_distribution)
-	msg.attach("log_requests.csv","text/csv",log_requests)
+	app.logger.debug(os.listdir())
+	log_distribution = open('log_distribution.csv','rb')
+	log_requests = open('log_requests.csv','rb')
+	msg.attach(filename = "log_distribution.csv",content_type = "text/csv",data = log_distribution.read())
+	msg.attach(filename = "log_requests.csv",content_type = "text/csv",data = log_requests.read())
 	app.logger.debug("!!!!!!!!!!!!!!!!!! Start sending Email !!!!!!!!!!!!!")
 	mail.send(msg)
 	app.logger.debug("!!!!!!!!!!!!!!!!!! Successfully sent Email !!!!!!!!!!!!!")
@@ -34,5 +37,5 @@ def mailTrigger(value):
 
 
 if __name__ == '__main__':
-	os.system("locust -c 10 -r 5 -t 30s --no-web --host http://localhost:5000 --csv=log")
+	# os.system("locust -c 10 -r 5 -t 30s --no-web --host http://localhost:5000 --csv=log")
 	app.run(port=5000)  
