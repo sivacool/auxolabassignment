@@ -10,7 +10,6 @@ counter = Value('i', 0)
 app = Flask(__name__)
 app.config.from_pyfile('config.cfg')
 mail = Mail(app)
-
 @app.route('/username', methods=['POST'])
 def username():
 	data = request.get_json()
@@ -23,7 +22,7 @@ def username():
 	return Response(dumps({"status":"sucess"}),mimetype='application/json')
 
 def mailTrigger(value):
-	msg = Message("Auxo Labs Load testing mail of "+str(value)+" requests",sender= 'sivasivacsc@gmail.com',recipients=['sivasivacsc@gmail.com'])
+	msg = Message("Auxo Labs Load testing mail of "+str(value)+" requests",sender= app.config['MAIL_USERNAME'],recipients=[app.config['MAIL_USERNAME']])
 	msg.body = "HI Auxo Labs PFA"
 	app.logger.debug(os.listdir())
 	log_distribution = open('log_distribution.csv','rb')
